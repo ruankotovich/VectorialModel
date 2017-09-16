@@ -20,9 +20,10 @@ enum class CursorClass {
 
 class Parser {
     std::ifstream m_currentStream;
-    CursorClass m_lastClass;
+    CursorClass m_currentClass;
 
 public:
     void setFile(const std::string&);
     void parseNext();
+    Parser();
 };
