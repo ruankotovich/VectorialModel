@@ -3,7 +3,7 @@
 #include <iostream>
 #include <queue>
 
-enum class A {
+enum class CursorClass {
     PAPER_NUMBER, //PN
     RECORD_NUMBER, //RN
     ACESSION_NUMBER, //AN
@@ -14,11 +14,13 @@ enum class A {
     MINOR_SUBJECTS, //MN
     AB_EX, //AB or EX
     REFERENCES, //RF
-    CITATIONS // CT
+    CITATIONS, // CT
+    NOTHING
 };
 
 class Parser {
-    std::ifstream currentStream;
+    std::ifstream m_currentStream;
+    CursorClass m_lastClass;
 
 public:
     void setFile(const std::string&);
