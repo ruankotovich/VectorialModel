@@ -9,12 +9,13 @@ void Parser::parseNext()
 {
 }
 
-void Parser::extractWords(std::string& s)
+void Parser::clearLine(std::string& s)
 {
     // drop off the stopwords
 
     // tip taken on https://stackoverflow.com/questions/6319872/how-to-strip-all-non-alphanumeric-characters-from-a-string-in-c
-    s.erase(std::remove_if(s.begin(), s.end(), (int (*)(int))std::isalnum), s.end());
+    s.erase(std::remove_if(s.begin(), s.end(), [](char x) { return !(std::isalpha(x) || std::isspace(x)); }), s.end());
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
 
 CursorClass Parser::classifyLine(const std::string& line)

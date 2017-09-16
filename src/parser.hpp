@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <queue>
+#include <string>
 
 enum class CursorClass {
     PAPER_NUMBER, //PN
@@ -24,9 +25,9 @@ class Parser {
     std::ifstream m_currentStream;
     CursorClass m_currentClass;
     CursorClass classifyLine(const std::string&);
-    void extractWords(std::string&);
 
 public:
+    void clearLine(std::string&);
     void setFile(const std::string&);
     void parseNext();
     Parser();
