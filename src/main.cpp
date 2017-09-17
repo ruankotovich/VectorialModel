@@ -1,9 +1,15 @@
 #include "parser.hpp"
 
+using namespace std;
+
 int main()
 {
     Parser parser;
-    std::string test = "Ru#an Gab-r.1ie@l Gat.o- Barro!!@#!@$!@%!@%s";
-    parser.clearLine(test);
-    std::cout << test;
+    parser.setFile("cfc/cf74");
+
+    Document document = parser.parseNext();
+    while(document.id != -1) {
+        cout << document.id << endl;
+        document = parser.parseNext();
+    }
 }
