@@ -19,3 +19,7 @@ void Document::addWord(const std::string& word)
         wordAmountOnDocument[word]++;
     }
 }
+
+Document::Document() {
+    id = -1;
+}

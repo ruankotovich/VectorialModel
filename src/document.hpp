@@ -7,21 +7,6 @@ struct Document {
     std::map<std::string, int> wordAmountOnDocument;
     std::map<std::string, double> tfMap;
     void calculateTF();
-
-public:
-    void addWord(const std::string& word) {
-        auto tuple = wordAmountOnDocument.find(word);
-
-        if(tuple == wordAmountOnDocument.end()) {
-            wordAmountOnDocument.emplace(word, 1);
-            totalWordsCount++;
-        }
-        else {
-            wordAmountOnDocument[word]++;
-        }
-    }
-
-    Document() {
-        id = -1;
-    }
+    void addWord(const std::string& word);
+    Document();
 };
