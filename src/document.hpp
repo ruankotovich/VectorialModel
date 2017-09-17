@@ -19,4 +19,8 @@ public:
             wordAmountOnDocument[word]++;
         }
     }
+
+    Document() {
+        id = -1;
+    }
 };
