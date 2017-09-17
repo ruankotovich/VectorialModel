@@ -13,14 +13,20 @@ Document Parser::parseNext()
 
     if(this->m_currentStream.is_open()) {
         std::string line;
-        CursorClass lastCursorClass;
 
         while(std::getline(this->m_currentStream,line)) {
-            clearLine(line);
-            std::istringstream buffer(line);
             auto classify = classifyLine(line);
+
+            if(classify == CursorClass::BLANK)
+                return document;
+
+            if(classify != CursorClass::AUTHORS && classify != CursorClass::PAPER_NUMBER) {
+                clearLine(line);
+            }
             
-            if(classify != CursorClass::NOTHING || classify != CursorClass::BLANK) {
+            std::istringstream buffer(line);
+
+            if(classify != CursorClass::NOTHING) {
                 std::string code;
                 buffer >> code;
             }
@@ -31,7 +37,6 @@ Document Parser::parseNext()
             else {
                 std::string word;
                 while(buffer >> word) {
-                    std::cout << word << std::endl;
                     document.addWord(word);
                 }
             }
@@ -45,8 +50,11 @@ Document Parser::parseNext()
 
 void Parser::clearLine(std::string& s)
 {
+    for (std::string::size_type i = 0; (i = s.find("-", i)) != std::string::npos;) {
+        s.replace(i, 1, " ");
+        ++i;
+    }
     // drop off the stopwords
-
     // tip taken on https://stackoverflow.com/questions/6319872/how-to-strip-all-non-alphanumeric-characters-from-a-string-in-c
     s.erase(std::remove_if(s.begin(), s.end(), [](char x) { return !(std::isalpha(x) || std::isspace(x)); }), s.end());
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
@@ -54,7 +62,7 @@ void Parser::clearLine(std::string& s)
 
 CursorClass Parser::classifyLine(const std::string& line)
 {
-    if (line.size() > 0) {
+    if (line.size() > 1) {
         std::string lineClassString = line.substr(0, 2);
 
         if (lineClassString == " ") {
