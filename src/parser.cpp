@@ -7,9 +7,9 @@ void Parser::setFile(const std::string& file)
     this->m_currentStream = std::ifstream(file, std::ifstream::in);
 }
 
-Document Parser::parseNext()
+Document* Parser::parseNext()
 {
-    Document document;
+    Document* document = new Document();
 
     if (this->m_currentStream.is_open()) {
         std::string line;
@@ -23,38 +23,38 @@ Document Parser::parseNext()
             std::string code;
             buffer >> code;
 
-            if(classify == CursorClass::REFERENCES) {
+            if (classify == CursorClass::REFERENCES) {
                 clearLine(block);
 
                 buffer = std::istringstream(authors);
                 std::string word;
                 while (buffer >> word) {
-                    document.addWord(word);
+                    document->addWord(word);
                 }
 
                 buffer = std::istringstream(block);
-                while(buffer >> word) {
-                    document.addWord(word);
+                while (buffer >> word) {
+                    document->addWord(word);
                 }
 
-                while(std::getline(this->m_currentStream, line)) {
+                while (std::getline(this->m_currentStream, line)) {
                     classify = classifyLine(line);
-                    if(classify == CursorClass::BLANK)
+                    if (classify == CursorClass::BLANK)
                         return document;
                 }
             }
 
             if (classify == CursorClass::PAPER_NUMBER) {
-                buffer >> document.id;
+                buffer >> document->id;
             }
 
             std::string remaining;
             getline(buffer, remaining);
-            
-            if(classify == CursorClass::AUTHORS) {
+
+            if (classify == CursorClass::AUTHORS) {
                 authors += remaining;
-            }
-            else block += remaining;
+            } else
+                block += remaining;
         }
 
     } else

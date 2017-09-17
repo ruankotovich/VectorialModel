@@ -1,12 +1,12 @@
 #include "docollection.hpp"
 
-void Docollection::operator<<(Document& document)
+void Docollection::operator+=(Document* document)
 {
-    documentsById.insert({ document.id, document });
+    documentsById.insert({ document->id, document });
 
     // retrieves and insert all the words of this document on the documents by word map
-    for (auto& word : document.wordAmountOnDocument) {
-        this->documentsByWord[word.first].emplace(document.id);
+    for (auto& word : document->wordAmountOnDocument) {
+        this->documentsByWord[word.first].emplace(document->id);
     }
 }
 
@@ -23,7 +23,7 @@ void Docollection::calculateIDF()
 void Docollection::calculateTFIDF()
 {
     for (auto& document : documentsById) {
-        for (auto& word : document.second.tfMap) {
+        for (auto& word : document.second->tfMap) {
             tfidfMap[document.first].emplace(
                 std::piecewise_construct,
                 std::forward_as_tuple(word.first),
