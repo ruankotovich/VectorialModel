@@ -23,4 +23,5 @@ void Document::addWord(const std::string& word)
 Document::Document()
 {
     id = -1;
+    totalWordsCount = 0;
 }

@@ -9,7 +9,7 @@ int main()
 
     Document document = parser.parseNext();
     while(document.id != -1) {
-        cout << document.id << endl;
+        cout << document.id << " " << document.totalWordsCount << endl;
         document = parser.parseNext();
     }
 }

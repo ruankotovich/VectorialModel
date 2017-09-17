@@ -13,32 +13,48 @@ Document Parser::parseNext()
 
     if (this->m_currentStream.is_open()) {
         std::string line;
+        std::string block = "";
+        std::string authors = "";
 
         while (std::getline(this->m_currentStream, line)) {
             auto classify = classifyLine(line);
 
-            if (classify == CursorClass::BLANK)
-                return document;
-
-            if (classify != CursorClass::AUTHORS && classify != CursorClass::PAPER_NUMBER) {
-                clearLine(line);
-            }
-
             std::istringstream buffer(line);
+            std::string code;
+            buffer >> code;
 
-            if (classify != CursorClass::NOTHING) {
-                std::string code;
-                buffer >> code;
-            }
+            if(classify == CursorClass::REFERENCES) {
+                clearLine(block);
 
-            if (classify == CursorClass::PAPER_NUMBER) {
-                buffer >> document.id;
-            } else {
+                buffer = std::istringstream(authors);
                 std::string word;
                 while (buffer >> word) {
                     document.addWord(word);
                 }
+
+                buffer = std::istringstream(block);
+                while(buffer >> word) {
+                    document.addWord(word);
+                }
+
+                while(std::getline(this->m_currentStream, line)) {
+                    classify = classifyLine(line);
+                    if(classify == CursorClass::BLANK)
+                        return document;
+                }
             }
+
+            if (classify == CursorClass::PAPER_NUMBER) {
+                buffer >> document.id;
+            }
+
+            std::string remaining;
+            getline(buffer, remaining);
+            
+            if(classify == CursorClass::AUTHORS) {
+                authors += remaining;
+            }
+            else block += remaining;
         }
 
     } else
