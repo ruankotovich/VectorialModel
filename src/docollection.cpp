@@ -14,6 +14,20 @@ void Docollection::operator<<(Document& document)
 void Docollection::calculateIDF()
 {
     for (auto& word : documentsByWord) {
-        itfMap.emplace(std::piecewise_construct, std::forward_as_tuple(word.first), std::forward_as_tuple(log(((float)documentsById.size() / (float)word.second.size()))));
+        itfMap.emplace(std::piecewise_construct,
+            std::forward_as_tuple(word.first),
+            std::forward_as_tuple(log(((float)documentsById.size() / (float)word.second.size()))));
+    }
+}
+
+void Docollection::calculateTFIDF()
+{
+    for (auto& document : documentsById) {
+        for (auto& word : document.second.tfMap) {
+            tfidfMap[document.first].emplace(
+                std::piecewise_construct,
+                std::forward_as_tuple(word.first),
+                std::forward_as_tuple(word.second * itfMap[word.first]));
+        }
     }
 }

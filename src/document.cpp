@@ -7,3 +7,15 @@ void Document::calculateTF()
         tfMap.emplace(std::piecewise_construct, std::forward_as_tuple(word.first), std::forward_as_tuple(word.second / totalWordsCount));
     }
 }
+
+void Document::addWord(const std::string& word)
+{
+    auto tuple = wordAmountOnDocument.find(word);
+
+    if (tuple == wordAmountOnDocument.end()) {
+        wordAmountOnDocument.emplace(word, 1);
+        totalWordsCount++;
+    } else {
+        wordAmountOnDocument[word]++;
+    }
+}
