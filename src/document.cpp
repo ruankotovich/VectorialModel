@@ -20,6 +20,7 @@ void Document::addWord(const std::string& word)
     }
 }
 
-Document::Document() {
+Document::Document()
+{
     id = -1;
 }
