@@ -63,7 +63,7 @@ Document* Parser::parseNext()
         std::cout << "not open"
                   << "\n";
 
-    return document;
+    return nullptr;
 }
 
 void Parser::clearLineAuthor(std::string& s)

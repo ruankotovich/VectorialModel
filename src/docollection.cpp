@@ -14,7 +14,7 @@ void Docollection::operator+=(Document* document)
 void Docollection::calculateIDF()
 {
     for (auto& word : documentsByWord) {
-        itfMap.emplace(std::piecewise_construct,
+        idfMap.emplace(std::piecewise_construct,
             std::forward_as_tuple(word.first),
             std::forward_as_tuple(log(((float)documentsById.size() / (float)word.second.size())) + 1));
     }
@@ -27,7 +27,7 @@ void Docollection::calculateTFIDF()
             tfidfMap[document.first].emplace(
                 std::piecewise_construct,
                 std::forward_as_tuple(word.first),
-                std::forward_as_tuple(word.second * itfMap[word.first]));
+                std::forward_as_tuple(word.second * idfMap[word.first]));
         }
     }
 }
