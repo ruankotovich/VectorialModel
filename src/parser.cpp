@@ -45,7 +45,7 @@ Document* Parser::parseNext()
             }
 
             if (classify == CursorClass::RECORD_NUMBER) {
-                buffer >> document.id;
+                buffer >> document->id;
             }
 
             std::string remaining;
@@ -143,6 +143,47 @@ CursorClass Parser::classifyLine(const std::string& line)
     }
 
     return CursorClass::BLANK;
+}
+
+Query Parser::nextQuery() {
+    Query query;
+
+    if (this->m_currentStream.is_open()) {
+        std::string line, code, lastCode = "";
+        
+        while (std::getline(this->m_currentStream, line)) {
+            std::cout << line << std::endl;
+            if(line.size() <= 2) 
+                return query;
+
+            std::istringstream buffer(line);
+            
+            buffer >> code;
+            if(code != "QN" && code != "QU" && code != "NR" && code != "RD") 
+                code = lastCode;
+            
+            if(code == "QN") {
+                buffer >> query.id;
+            }
+            else if(code == "QU") {
+                std::string question;
+                getline(buffer, question);
+                query.query += question;
+            }
+            else if(code == "NR") {
+                buffer >> query.numberOfRelevants;
+            }
+            else if(code == "RD") {
+                int rn, value;
+                while(buffer >> rn >> value) {
+                    query.addRelevant(rn, value);
+                }
+            }
+            lastCode = code;
+        }
+    }
+
+    return query;
 }
 
 Parser::Parser()

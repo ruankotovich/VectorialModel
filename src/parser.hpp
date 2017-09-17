@@ -5,6 +5,7 @@
 #include <queue>
 #include <string>
 #include "document.hpp"
+#include "query.hpp"
 
 enum class CursorClass {
     PAPER_NUMBER, //PN
@@ -31,5 +32,6 @@ public:
     void clearLine(std::string&);
     void setFile(const std::string&);
     Document* parseNext();
+    Query nextQuery();
     Parser();
 };
