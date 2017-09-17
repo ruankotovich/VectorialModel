@@ -4,7 +4,7 @@
 void Document::calculateTF()
 {
     for (auto& word : wordAmountOnDocument) {
-        tfMap.emplace(std::piecewise_construct, std::forward_as_tuple(word.first), std::forward_as_tuple(word.second / totalWordsCount));
+        tfMap.emplace(std::piecewise_construct, std::forward_as_tuple(word.first), std::forward_as_tuple((float)word.second / (float)totalWordsCount));
     }
 }
 

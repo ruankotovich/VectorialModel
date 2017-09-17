@@ -1,5 +1,5 @@
 CC=g++
-CF=-std=c++14 -Wall -O2 -lm
+CF=-std=c++14 -Wall -g -lm
 SRC_P=src
 
 NAME=vmodel

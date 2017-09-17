@@ -9,9 +9,9 @@ void Parser::setFile(const std::string& file)
 
 Document* Parser::parseNext()
 {
-    Document* document = new Document();
 
     if (this->m_currentStream.is_open()) {
+        Document* document = new Document();
         std::string line;
         std::string block = "";
         std::string authors = "";
@@ -25,6 +25,7 @@ Document* Parser::parseNext()
 
             if (classify == CursorClass::REFERENCES) {
                 clearLine(block);
+                clearLineAuthor(authors);
 
                 buffer = std::istringstream(authors);
                 std::string word;
@@ -42,6 +43,7 @@ Document* Parser::parseNext()
                     if (classify == CursorClass::BLANK)
                         return document;
                 }
+                return document;
             }
 
             if (classify == CursorClass::RECORD_NUMBER) {
@@ -64,6 +66,15 @@ Document* Parser::parseNext()
     return document;
 }
 
+void Parser::clearLineAuthor(std::string& s)
+{
+    // drop off the stopwords
+    // tip taken on https://stackoverflow.com/questions/6319872/how-to-strip-all-non-alphanumeric-characters-from-a-string-in-c
+
+    s.erase(std::remove_if(s.begin(), s.end(), [](char x) { return !(std::isalpha(x) || std::isspace(x) || x == '-'); }), s.end());
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+}
+
 void Parser::clearLine(std::string& s)
 {
     for (std::string::size_type i = 0; (i = s.find("-", i)) != std::string::npos;) {
@@ -72,11 +83,6 @@ void Parser::clearLine(std::string& s)
     }
     // drop off the stopwords
     // tip taken on https://stackoverflow.com/questions/6319872/how-to-strip-all-non-alphanumeric-characters-from-a-string-in-c
-
-    for (std::string::size_type i = 0; (i = s.find("-", i)) != std::string::npos;) {
-        s.replace(i, 1, " ");
-        ++i;
-    }
 
     s.erase(std::remove_if(s.begin(), s.end(), [](char x) { return !(std::isalpha(x) || std::isspace(x)); }), s.end());
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
@@ -145,37 +151,35 @@ CursorClass Parser::classifyLine(const std::string& line)
     return CursorClass::BLANK;
 }
 
-Query Parser::nextQuery() {
+Query Parser::nextQuery()
+{
     Query query;
 
     if (this->m_currentStream.is_open()) {
         std::string line, code, lastCode = "";
-        
+
         while (std::getline(this->m_currentStream, line)) {
             std::cout << line << std::endl;
-            if(line.size() <= 2) 
+            if (line.size() <= 2)
                 return query;
 
             std::istringstream buffer(line);
-            
+
             buffer >> code;
-            if(code != "QN" && code != "QU" && code != "NR" && code != "RD") 
+            if (code != "QN" && code != "QU" && code != "NR" && code != "RD")
                 code = lastCode;
-            
-            if(code == "QN") {
+
+            if (code == "QN") {
                 buffer >> query.id;
-            }
-            else if(code == "QU") {
+            } else if (code == "QU") {
                 std::string question;
                 getline(buffer, question);
                 query.query += question;
-            }
-            else if(code == "NR") {
+            } else if (code == "NR") {
                 buffer >> query.numberOfRelevants;
-            }
-            else if(code == "RD") {
+            } else if (code == "RD") {
                 int rn, value;
-                while(buffer >> rn >> value) {
+                while (buffer >> rn >> value) {
                     query.addRelevant(rn, value);
                 }
             }

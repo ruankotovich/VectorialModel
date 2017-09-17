@@ -30,6 +30,7 @@ class Parser {
 
 public:
     void clearLine(std::string&);
+    void clearLineAuthor(std::string&);
     void setFile(const std::string&);
     Document* parseNext();
     Query nextQuery();
