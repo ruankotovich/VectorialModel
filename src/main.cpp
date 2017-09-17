@@ -10,8 +10,13 @@ int main()
     Docollection collection;
 
     Document* document = parser.parseNext();
-    while (document->id != -1) {
+
+    while (document) {
+        if (document->id == -1) {
+            break;
+        }
+        collection += document;
         cout << document->id << " " << document->totalWordsCount << endl;
-        collection += document = parser.parseNext();
+        document = parser.parseNext();
     }
 }

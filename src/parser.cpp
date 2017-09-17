@@ -45,7 +45,7 @@ Document* Parser::parseNext()
             }
 
             if (classify == CursorClass::RECORD_NUMBER) {
-                buffer >> document.id;
+                buffer >> document->id;
             }
 
             std::string remaining;
