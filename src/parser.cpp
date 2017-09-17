@@ -44,7 +44,7 @@ Document Parser::parseNext()
                 }
             }
 
-            if (classify == CursorClass::PAPER_NUMBER) {
+            if (classify == CursorClass::RECORD_NUMBER) {
                 buffer >> document.id;
             }
 
