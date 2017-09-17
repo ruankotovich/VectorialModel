@@ -1,12 +1,46 @@
 #include "parser.hpp"
+#include <sstream>
+#include <iostream>
 
 void Parser::setFile(const std::string& file)
 {
-    this->m_currentStream = std::ifstream(file);
+    this->m_currentStream = std::ifstream(file,  std::ifstream::in);
 }
 
-void Parser::parseNext()
+Document Parser::parseNext()
 {
+    Document document;
+
+    if(this->m_currentStream.is_open()) {
+        std::string line;
+        CursorClass lastCursorClass;
+
+        while(std::getline(this->m_currentStream,line)) {
+            clearLine(line);
+            std::istringstream buffer(line);
+            auto classify = classifyLine(line);
+            
+            if(classify != CursorClass::NOTHING || classify != CursorClass::BLANK) {
+                std::string code;
+                buffer >> code;
+            }
+
+            if(classify == CursorClass::PAPER_NUMBER) {
+                buffer >> document.id;
+            }
+            else {
+                std::string word;
+                while(buffer >> word) {
+                    std::cout << word << std::endl;
+                    document.addWord(word);
+                }
+            }
+        }
+        
+    }
+    else std::cout << "not open" << "\n";
+
+    return document;
 }
 
 void Parser::clearLine(std::string& s)
@@ -21,7 +55,7 @@ void Parser::clearLine(std::string& s)
 CursorClass Parser::classifyLine(const std::string& line)
 {
     if (line.size() > 0) {
-        std::string lineClassString = line.substr(0, 1);
+        std::string lineClassString = line.substr(0, 2);
 
         if (lineClassString == " ") {
             return CursorClass::NOTHING;
