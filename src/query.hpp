@@ -8,7 +8,7 @@ class CompareQuery {
 public:
     bool operator()(std::pair<int, int> a, std::pair<int, int> b)
     {
-        return a.second > b.second;
+        return a.second < b.second;
     }
 };
 
@@ -26,7 +26,7 @@ struct Query {
             result += value%10;
             value /= 10;
         }
-        
+
         docsByRelevance.push(std::make_pair(rn, result));
     }
 

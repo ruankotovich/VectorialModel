@@ -175,7 +175,8 @@ Query Parser::nextQuery()
 
             std::istringstream buffer(line);
 
-            buffer >> code;
+            code = line.substr(0, 2);
+            //buffer >> code;
             if (code != "QN" && code != "QU" && code != "NR" && code != "RD")
                 code = lastCode;
 
