@@ -72,7 +72,8 @@ int main(int argc, char* argv[])
         std::cout << " --- Query # " << q.id << " - \"" << q.query << "\"\n";
         std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>, std::allocator<std::pair<int, double>>>, QueryComparator_t> queryResponse = collection.performQuery(q);
 
-        auto value = precisionR(q, queryResponse, 10, 10);
+        // auto value = precisionR(q, queryResponse, 10, 10);
+        auto value = pArroba(q, queryResponse, 10);
         prAverage += value;
         prCount++;
         while (!queryResponse.empty()) {
@@ -82,12 +83,12 @@ int main(int argc, char* argv[])
             queryResponse.pop();
         }
 
-        cout << "Precision-R: " << std::fixed << std::setprecision(10) << value << endl;
+        cout << "P@: " << std::fixed << std::setprecision(10) << value << endl;
 
         std::cout << '\n';
 
         q = parser.nextQuery();
     }
 
-    cout << "Precision-R Average: " << std::fixed << std::setprecision(10) << (prAverage / (double)prCount) << endl;
+    cout << "P@ Average: " << std::fixed << std::setprecision(10) << (prAverage / (double)prCount) << endl;
 }
