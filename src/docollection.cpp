@@ -16,7 +16,10 @@ void Docollection::calculateIDF()
     for (auto& word : documentsByWord) {
         idfMap.emplace(std::piecewise_construct,
             std::forward_as_tuple(word.first),
-            std::forward_as_tuple((log(((double)documentsById.size() / (double)word.second.size()))) + 1.0f));
+            std::forward_as_tuple(
+                (log(((double)documentsById.size() / (double)word.second.size()))) * 2));
+        // demos mais peso ao IDF já que consideramos que a raridade de uma palavra é importante nessa base, já que existem muitos nomes
+        // de doenças em vários artigos diferentes
     }
 }
 
