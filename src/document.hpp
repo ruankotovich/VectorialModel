@@ -11,4 +11,5 @@ struct Document {
     void calculateTF();
     void addWord(const std::string& word);
     Document();
+    double operator^(const Document*);
 };
