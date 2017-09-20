@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
+#include <iomanip> // std::setprecision
 #include <iostream>
 #include <map>
 #include <queue>
@@ -15,7 +16,7 @@
 struct QueryComparator_t {
     bool operator()(const std::pair<int, double>& f, const std::pair<int, double>& s)
     {
-        return f.second > s.second;
+        return f.second < s.second;
     }
 };
 

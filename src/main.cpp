@@ -1,7 +1,9 @@
 #include "docollection.hpp"
 #include "parser.hpp"
+#include <cstdio>
 #include "evaluation.hpp"
 #include <cstring>
+#include <iomanip> // std::setprecision
 #include <queue>
 using namespace std;
 
@@ -34,6 +36,10 @@ int main(int argc, char* argv[])
         collection.calculateTFIDF();
     }
 
+    // for (auto& idfMap : collection.idfMap) {
+    //     std::cout << idfMap.first << " -> " << idfMap.second << '\n';
+    // }
+
     // for (auto& document : collection.tfidfMap) {
     //     auto& wordSet = document.second;
     //     std::cout << "--- Document # " << document.first << '\n';
@@ -42,10 +48,26 @@ int main(int argc, char* argv[])
     //     }
     // }
 
+    // for (auto& document : collection.documentsById) {
+    //     std::cout << "--- Document # " << document.first << '\n';
+    //     for (auto& wordTf : document.second->tfMap) {
+    //         std::cout << wordTf.first << " -> " << wordTf.second << '\n';
+    //     }
+    // }
+
     parser.setFile("cfc/query");
     Query q = parser.nextQuery();
     while (q.id != -1) {
-        std::cout << q.id << " - \"" << q.query << "\"\n";
+        std::cout << " --- Query # " << q.id << " - \"" << q.query << "\"\n";
+        auto queryResponse = collection.performQuery(q);
+        while (!queryResponse.empty()) {
+            auto& response = queryResponse.top();
+            // std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
+            printf(" ------ Doc # %d = %f\n", response.first, response.second);
+            queryResponse.pop();
+        }
+        std::cout << '\n';
+
         q = parser.nextQuery();
     }
 }
