@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
     //     }
     // }
 
-    parser.setFile("cfc/query");
+    parser.setFile("cfc/cfquery");
     Query q = parser.nextQuery();
     while (q.id != -1) {
         std::cout << " --- Query # " << q.id << " - \"" << q.query << "\"\n";
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
         while (!queryResponse.empty()) {
             auto& response = queryResponse.top(); 
             // std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
-            printf(" ------ Doc # %d = %f\n", response.first, response.second);
+            // printf(" ------ Doc # %d = %f\n", response.first, response.second);
             queryResponse.pop();
         }
 
