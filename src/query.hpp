@@ -21,7 +21,13 @@ struct Query {
 
     void addRelevant(int rn, int value)
     {
-        docsByRelevance.push(std::make_pair(rn, value));
+        int result = 0;
+        while(value > 0) {
+            result += value%10;
+            value /= 10;
+        }
+        
+        docsByRelevance.push(std::make_pair(rn, result));
     }
 
     Query()
