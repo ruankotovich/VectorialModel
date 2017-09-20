@@ -1,7 +1,7 @@
 #include "docollection.hpp"
+#include "evaluation.hpp"
 #include "parser.hpp"
 #include <cstdio>
-#include "evaluation.hpp"
 #include <cstring>
 #include <iomanip> // std::setprecision
 #include <queue>
@@ -64,23 +64,30 @@ int main(int argc, char* argv[])
 
     parser.setFile("cfc/cfquery");
     Query q = parser.nextQuery();
+
+    double prAverage = 0;
+    int prCount = 0;
+
     while (q.id != -1) {
         std::cout << " --- Query # " << q.id << " - \"" << q.query << "\"\n";
-        std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>, std::allocator<std::pair<int, double> > >, QueryComparator_t> queryResponse = collection.performQuery(q);
-        
+        std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>, std::allocator<std::pair<int, double>>>, QueryComparator_t> queryResponse = collection.performQuery(q);
+
         auto value = precisionR(q, queryResponse, 10, 10);
-        
+        prAverage += value;
+        prCount++;
         while (!queryResponse.empty()) {
-            auto& response = queryResponse.top(); 
+            auto& response = queryResponse.top();
             // std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
             // printf(" ------ Doc # %d = %f\n", response.first, response.second);
             queryResponse.pop();
         }
 
         cout << "Precision-R: " << std::fixed << std::setprecision(10) << value << endl;
-        
+
         std::cout << '\n';
 
         q = parser.nextQuery();
     }
+
+    cout << "Precision-R Average: " << std::fixed << std::setprecision(10) << (prAverage / (double)prCount) << endl;
 }

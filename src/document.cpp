@@ -13,9 +13,10 @@ void Document::addWord(const std::string& word)
 {
     auto tuple = wordAmountOnDocument.find(word);
 
+    totalWordsCount++;
+    
     if (tuple == wordAmountOnDocument.end()) {
         wordAmountOnDocument.emplace(word, 1);
-        totalWordsCount++;
     } else {
         wordAmountOnDocument[word]++;
     }
