@@ -1,5 +1,6 @@
 #include "docollection.hpp"
 #include "parser.hpp"
+#include "evaluation.hpp"
 #include <cstring>
 #include <queue>
 using namespace std;
