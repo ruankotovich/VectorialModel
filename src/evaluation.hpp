@@ -17,7 +17,7 @@ double precisionR(Query query,
             query.docsByRelevance.pop();
         }
 
-        double score = 0, lastRelevantIndex = 0;
+        double score = 0, irrelevantCount = 0;
         alfa += R;
 
         std::pair<int, int> currentDoc;
@@ -25,9 +25,9 @@ double precisionR(Query query,
             currentDoc = documents.top();
 
             if(relevantDocuments.find(currentDoc.first) != relevantDocuments.end()) {
-                score = 1 - (i - 1 - lastRelevantIndex)/alfa;
-                lastRelevantIndex = i;
+                score = 1 - (i - 1 - irrelevantCount)/alfa;
             }
+            else ++irrelevantCount;
 
             documents.pop();
         }
