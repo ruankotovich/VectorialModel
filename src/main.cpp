@@ -39,9 +39,10 @@ int main(int argc, char* argv[])
             collection += document;
             document = parser.parseNext();
         }
-        collection.calculateIDF();
-        collection.calculateTFIDF();
     }
+
+    collection.calculateIDF();
+    collection.calculateTFIDF();
 
     // for (auto& idfMap : collection.idfMap) {
     //     std::cout << idfMap.first << " -> " << idfMap.second << '\n';
@@ -76,12 +77,12 @@ int main(int argc, char* argv[])
         auto value = pArroba(q, queryResponse, 10);
         prAverage += value;
         prCount++;
-        while (!queryResponse.empty()) {
-            auto& response = queryResponse.top();
-            // std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
-            // printf(" ------ Doc # %d = %f\n", response.first, response.second);
-            queryResponse.pop();
-        }
+        // while (!queryResponse.empty()) {
+        //     auto& response = queryResponse.top();
+        //     // std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
+        //     // printf(" ------ Doc # %d = %f\n", response.first, response.second);
+        //     queryResponse.pop();
+        // }
 
         cout << "P@: " << std::fixed << std::setprecision(10) << value << endl;
 
