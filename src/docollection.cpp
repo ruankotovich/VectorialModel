@@ -84,7 +84,7 @@ double Docollection::calculateSimilarity(const Query& query, const Document* doc
         wiq = 0;
 
         if (elementOnQuery != currentQueryTFIDF.end()) {
-            wiq = elementOnQuery->second;
+            wiq = elementOnQuery->second * 2;
             currentQueryTFIDF.erase(elementOnQuery);
         }
 
