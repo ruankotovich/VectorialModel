@@ -16,7 +16,7 @@ void Docollection::calculateIDF()
     for (auto& word : documentsByWord) {
         idfMap.emplace(std::piecewise_construct,
             std::forward_as_tuple(word.first),
-            std::forward_as_tuple(log(((float)documentsById.size() / (float)word.second.size()))));
+            std::forward_as_tuple((log(((double)documentsById.size() / (double)word.second.size()))) + 1.0f));
     }
 }
 
@@ -70,41 +70,44 @@ double Docollection::calculateSimilarity(const Query& query, const Document* doc
     /* calculate the TF for the "query document" */
     queryDocument.calculateTF();
 
-    auto currentQueryTFIDF = calculateSpecificTFIDF(&queryDocument);
-    auto currentDocumentTFIDF = this->tfidfMap[document->id];
+    auto&& currentQueryTFIDF = calculateSpecificTFIDF(&queryDocument);
+    auto& currentDocumentTFIDF = this->tfidfMap[document->id];
 
-    double sumWid = 0, sumWiq = 0, sumWid2 = 0, sumWiq2 = 0;
+    double wid = 0, wiq = 0, sumWid2 = 0, sumWiq2 = 0;
     double sumWidXWiq = 0;
 
     /* verify which set is the smaller */
+    // std::cout << " --- Calculating query for Document # " << document->id << "\n";
     if (currentQueryTFIDF.size() < currentDocumentTFIDF.size()) {
 
         for (auto& elementOnQuery : currentQueryTFIDF) {
-            auto elementOnDocument = currentDocumentTFIDF.find(elementOnQuery.first);
-            if (elementOnDocument != currentDocumentTFIDF.end()) {
-                sumWid += elementOnDocument->second;
-                sumWiq += elementOnQuery.second;
-                sumWid2 = pow(sumWid, 2.0f);
-                sumWiq2 = pow(sumWiq, 2.0f);
-                sumWidXWiq += sumWid + sumWiq;
-            }
+            auto elementOnDocument = currentDocumentTFIDF[elementOnQuery.first];
+            wid = elementOnDocument;
+            wiq = elementOnQuery.second;
+            sumWid2 += pow(wid, 2.0f);
+            sumWiq2 += pow(wiq, 2.0f);
+            sumWidXWiq += wid * wiq;
+            // std::cout << "Current state : (wid : " << wid << ", wiq : " << wiq << ", sumWid2 : " << sumWid2 << ", sumWiq2 : " << sumWiq2 << ", sumWidXWiq : " << sumWidXWiq << ")\n";
         }
 
     } else {
-
         for (auto& elementOnDocument : currentDocumentTFIDF) {
-            auto elementOnQuery = currentQueryTFIDF.find(elementOnDocument.first);
-            if (elementOnQuery != currentQueryTFIDF.end()) {
-                sumWid += elementOnDocument.second;
-                sumWiq += elementOnQuery->second;
-                sumWid2 = pow(sumWid, 2.0f);
-                sumWiq2 = pow(sumWiq, 2.0f);
-                sumWidXWiq += sumWid + sumWiq;
-            }
+            auto elementOnQuery = currentQueryTFIDF[elementOnDocument.first];
+            wid = elementOnDocument.second;
+            wiq = elementOnQuery;
+            sumWid2 += pow(wid, 2.0f);
+            sumWiq2 += pow(wiq, 2.0f);
+            sumWidXWiq += wid * wiq;
+            // std::cout << "Current state : (wid : " << wid << ", wiq : " << wiq << ", sumWid2 : " << sumWid2 << ", sumWiq2 : " << sumWiq2 << ", sumWidXWiq : " << sumWidXWiq << ")\n";
         }
     }
 
-    return sumWidXWiq / (sqrt(sumWid2) * sqrt(sumWiq2));
+    // std::cout << "\nDocument # " << document->id << ": " << sumWidXWiq << " / "
+    //           << "(" << sqrt(sumWid2) << "*" << sqrt(sumWiq2) << ")"
+    //           << "\n\n";
+
+    double downSide = (sqrt(sumWid2) * sqrt(sumWiq2));
+    return downSide > 0 ? (sumWidXWiq / downSide) : 0.0f;
 }
 
 std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>>, QueryComparator_t> Docollection::performQuery(const Query& query)
