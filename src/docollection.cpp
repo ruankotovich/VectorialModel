@@ -76,30 +76,33 @@ double Docollection::calculateSimilarity(const Query& query, const Document* doc
     double wid = 0, wiq = 0, sumWid2 = 0, sumWiq2 = 0;
     double sumWidXWiq = 0;
 
-    /* verify which set is the smaller */
     // std::cout << " --- Calculating query for Document # " << document->id << "\n";
-    if (currentQueryTFIDF.size() < currentDocumentTFIDF.size()) {
 
-        for (auto& elementOnQuery : currentQueryTFIDF) {
-            auto elementOnDocument = currentDocumentTFIDF[elementOnQuery.first];
-            wid = elementOnDocument;
-            wiq = elementOnQuery.second;
-            sumWid2 += pow(wid, 2.0f);
-            sumWiq2 += pow(wiq, 2.0f);
-            sumWidXWiq += wid * wiq;
-            // std::cout << "Current state : (wid : " << wid << ", wiq : " << wiq << ", sumWid2 : " << sumWid2 << ", sumWiq2 : " << sumWiq2 << ", sumWidXWiq : " << sumWidXWiq << ")\n";
+    for (auto& elementOnDocument : currentDocumentTFIDF) {
+        auto elementOnQuery = currentQueryTFIDF.find(elementOnDocument.first);
+        wid = elementOnDocument.second;
+        wiq = 0;
+
+        if (elementOnQuery != currentQueryTFIDF.end()) {
+            wiq = elementOnQuery->second;
+            currentQueryTFIDF.erase(elementOnQuery);
         }
 
-    } else {
-        for (auto& elementOnDocument : currentDocumentTFIDF) {
-            auto elementOnQuery = currentQueryTFIDF[elementOnDocument.first];
-            wid = elementOnDocument.second;
-            wiq = elementOnQuery;
-            sumWid2 += pow(wid, 2.0f);
-            sumWiq2 += pow(wiq, 2.0f);
-            sumWidXWiq += wid * wiq;
-            // std::cout << "Current state : (wid : " << wid << ", wiq : " << wiq << ", sumWid2 : " << sumWid2 << ", sumWiq2 : " << sumWiq2 << ", sumWidXWiq : " << sumWidXWiq << ")\n";
-        }
+        wiq = elementOnQuery != currentQueryTFIDF.end() ? elementOnQuery->second : 0;
+        sumWid2 += pow(wid, 2.0f);
+        sumWiq2 += pow(wiq, 2.0f);
+        sumWidXWiq += wid * wiq;
+        // std::cout << "Current state : (wid : " << wid << ", wiq : " << wiq << ", sumWid2 : " << sumWid2 << ", sumWiq2 : " << sumWiq2 << ", sumWidXWiq : " << sumWidXWiq << ")\n";
+    }
+
+    for (auto& elementOnQuery : currentQueryTFIDF) {
+        auto elementOnDocument = currentDocumentTFIDF.find(elementOnQuery.first);
+        wid = elementOnDocument != currentDocumentTFIDF.end() ? elementOnDocument->second : 0;
+        wiq = elementOnQuery.second;
+        sumWid2 += pow(wid, 2.0f);
+        sumWiq2 += pow(wiq, 2.0f);
+        sumWidXWiq += wid * wiq;
+        // std::cout << "Current state : (wid : " << wid << ", wiq : " << wiq << ", sumWid2 : " << sumWid2 << ", sumWiq2 : " << sumWiq2 << ", sumWidXWiq : " << sumWidXWiq << ")\n";
     }
 
     // std::cout << "\nDocument # " << document->id << ": " << sumWidXWiq << " / "

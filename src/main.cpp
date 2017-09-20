@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
     //     }
     // }
 
-    parser.setFile("cfc/cfquery");
+    parser.setFile("cfc/query");
     Query q = parser.nextQuery();
     while (q.id != -1) {
         std::cout << " --- Query # " << q.id << " - \"" << q.query << "\"\n";
