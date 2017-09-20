@@ -16,7 +16,7 @@ void Docollection::calculateIDF()
     for (auto& word : documentsByWord) {
         idfMap.emplace(std::piecewise_construct,
             std::forward_as_tuple(word.first),
-            std::forward_as_tuple(log(((float)documentsById.size() / (float)word.second.size())) + 1));
+            std::forward_as_tuple(log(((float)documentsById.size() / (float)word.second.size()))));
     }
 }
 

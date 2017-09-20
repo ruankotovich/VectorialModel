@@ -26,6 +26,7 @@
     "type_traits": "cpp",
     "typeinfo": "cpp",
     "utility": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "thread": "cpp"
   }
 }

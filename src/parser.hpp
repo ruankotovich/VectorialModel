@@ -27,7 +27,7 @@ class Parser {
     std::ifstream m_currentStream;
     CursorClass m_currentClass;
     CursorClass classifyLine(const std::string&);
-
+    void trim(std::string&);
 public:
     void clearLine(std::string&);
     void clearLineAuthor(std::string&);

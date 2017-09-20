@@ -151,6 +151,16 @@ CursorClass Parser::classifyLine(const std::string& line)
     return CursorClass::BLANK;
 }
 
+// tip on http://www.cplusplus.com/forum/beginner/208971/
+void Parser::trim(std::string& aString)
+{
+    while (aString.size() && isspace(aString.front()))
+        aString.erase(aString.begin());
+
+    while (aString.size() && isspace(aString.back()))
+        aString.pop_back();
+}
+
 Query Parser::nextQuery()
 {
     Query query;
@@ -159,7 +169,7 @@ Query Parser::nextQuery()
         std::string line, code, lastCode = "";
 
         while (std::getline(this->m_currentStream, line)) {
-            std::cout << line << std::endl;
+
             if (line.size() <= 2)
                 return query;
 
@@ -187,6 +197,7 @@ Query Parser::nextQuery()
         }
     }
 
+    // this->trim(query.query);
     return query;
 }
 
