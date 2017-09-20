@@ -12,22 +12,24 @@ double precisionR(Query query,
 
     if(R <= documents.size() && R <= query.docsByRelevance.size()) {
         std::set<int> relevantDocuments;
-        while (!query.docsByRelevance.empty()) {
-            relevantDocuments.insert(std::move(const_cast<int&>(query.docsByRelevance.top().second)));
+        int k = 0;
+        while (!query.docsByRelevance.empty() && k < R) {
+            relevantDocuments.insert(std::move(const_cast<int&>(query.docsByRelevance.top().first)));
             query.docsByRelevance.pop();
+            ++k;
         }
 
-        double score = 0, lastRelevantIndex = 0;
+        double score = 0, irrelevantCount = 0;
         alfa += R;
 
-        std::pair<int, int> currentDoc;
+        std::pair<int, double> currentDoc;
         for(int i = 0; i < R; ++i) {
             currentDoc = documents.top();
 
             if(relevantDocuments.find(currentDoc.first) != relevantDocuments.end()) {
-                score = 1 - (i - 1 - lastRelevantIndex)/alfa;
-                lastRelevantIndex = i;
+                score += 1.0f - (irrelevantCount)/alfa;
             }
+            else ++irrelevantCount;
 
             documents.pop();
         }
@@ -38,4 +40,8 @@ double precisionR(Query query,
     return 0;
 }
 
+
+double precisionR(Query query, std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>>, QueryComparator_t> documents) { 
+    return 0;
+}
 #endif
