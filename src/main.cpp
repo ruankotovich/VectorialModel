@@ -17,12 +17,13 @@ int main(int argc, char* argv[])
         documentQueue.push(argv[i]);
     }
 
-    documentQueue.push("cfc/cf74");
-    documentQueue.push("cfc/cf75");
-    documentQueue.push("cfc/cf76");
-    documentQueue.push("cfc/cf77");
-    documentQueue.push("cfc/cf78");
-    documentQueue.push("cfc/cf79");
+    documentQueue.push("cfc/example");
+    // documentQueue.push("cfc/cf74");
+    // documentQueue.push("cfc/cf75");
+    // documentQueue.push("cfc/cf76");
+    // documentQueue.push("cfc/cf77");
+    // documentQueue.push("cfc/cf78");
+    // documentQueue.push("cfc/cf79");
 
     while (!documentQueue.empty()) {
 
@@ -62,7 +63,7 @@ int main(int argc, char* argv[])
     //     }
     // }
 
-    parser.setFile("cfc/cfquery");
+    parser.setFile("cfc/query");
     Query q = parser.nextQuery();
 
     double prAverage = 0;
@@ -77,8 +78,8 @@ int main(int argc, char* argv[])
         prCount++;
         while (!queryResponse.empty()) {
             auto& response = queryResponse.top();
-            // std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
-            // printf(" ------ Doc # %d = %f\n", response.first, response.second);
+            std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
+            printf(" ------ Doc # %d = %f\n", response.first, response.second);
             queryResponse.pop();
         }
 
