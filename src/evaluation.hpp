@@ -52,7 +52,7 @@ double pArroba(Query query, std::priority_queue<std::pair<int, double>, std::vec
         query.docsByRelevance.pop();
     }
 
-    int relevantsFound = 0;
+    double relevantsFound = 0;
     std::pair<int, double> currentDoc;
     for(int i = 0; i < K; ++i) {
         currentDoc = documents.top();
@@ -65,5 +65,28 @@ double pArroba(Query query, std::priority_queue<std::pair<int, double>, std::vec
     }
 
     return relevantsFound/K;
+}
+
+double mapEvalutation(Query query, std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>>, QueryComparator_t> documents) { 
+    std::set<int> relevantDocuments;
+    while (!query.docsByRelevance.empty()) {
+        relevantDocuments.insert(std::move(const_cast<int&>(query.docsByRelevance.top().first)));
+        query.docsByRelevance.pop();
+    }
+
+    double relevantsFound = 0, score = 0;
+    std::pair<int, double> currentDoc;
+    for(double i = 0; i < documents.size() && relevantsFound < relevantDocuments.size(); ++i) {
+        currentDoc = documents.top();
+
+        if(relevantDocuments.find(currentDoc.first) != relevantDocuments.end()) {
+            ++relevantsFound;
+            score += relevantsFound/(i + 1);
+        }
+
+        documents.pop();
+    }
+
+    return score/((double)relevantDocuments.size());
 }
 #endif

@@ -39,9 +39,10 @@ int main(int argc, char* argv[])
             collection += document;
             document = parser.parseNext();
         }
-        collection.calculateIDF();
-        collection.calculateTFIDF();
     }
+
+    collection.calculateIDF();
+    collection.calculateTFIDF();
 
     // for (auto& idfMap : collection.idfMap) {
     //     std::cout << idfMap.first << " -> " << idfMap.second << '\n';
@@ -65,8 +66,8 @@ int main(int argc, char* argv[])
     parser.setFile("cfc/cfquery");
     Query q = parser.nextQuery();
 
-    double prAverage = 0;
-    int prCount = 0;
+    double prAverage = 0, mapAverage = 0;
+    int prCount = 0, mapCount = 0;
 
     while (q.id != -1) {
         std::cout << " --- Query # " << q.id << " - \"" << q.query << "\"\n";
@@ -74,16 +75,21 @@ int main(int argc, char* argv[])
 
         // auto value = precisionR(q, queryResponse, 10, 10);
         auto value = pArroba(q, queryResponse, 10);
+        auto mapValue = mapEvalutation(q, queryResponse);
         prAverage += value;
         prCount++;
-        while (!queryResponse.empty()) {
-            auto& response = queryResponse.top();
-            // std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
-            // printf(" ------ Doc # %d = %f\n", response.first, response.second);
-            queryResponse.pop();
-        }
+
+        mapAverage += mapValue;
+        mapCount++;
+        // while (!queryResponse.empty()) {
+        //     auto& response = queryResponse.top();
+        //     // std::cout << " Doc # " << response.first << " = " << std::fixed << std::setprecision(20) << response.second << '\n';
+        //     // printf(" ------ Doc # %d = %f\n", response.first, response.second);
+        //     queryResponse.pop();
+        // }
 
         cout << "P@: " << std::fixed << std::setprecision(10) << value << endl;
+        cout << "Map Evaluation: " << std::fixed << std::setprecision(10) << mapValue << endl;
 
         std::cout << '\n';
 
@@ -91,4 +97,5 @@ int main(int argc, char* argv[])
     }
 
     cout << "P@ Average: " << std::fixed << std::setprecision(10) << (prAverage / (double)prCount) << endl;
+    cout << "Map Evaluation Average: " << std::fixed << std::setprecision(10) << (mapAverage / (double)mapCount) << endl;
 }
