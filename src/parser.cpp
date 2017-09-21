@@ -35,7 +35,9 @@ Document* Parser::parseNext()
 
                 buffer = std::istringstream(block);
                 while (buffer >> word) {
-                    document->addWord(word);
+                    if(this->stopWords.find(word) == this->stopWords.end()) {
+                        document->addWord(word);
+                    }
                 }
 
                 while (std::getline(this->m_currentStream, line)) {
@@ -183,8 +185,13 @@ Query Parser::nextQuery()
                 buffer >> query.id;
             } else if (code == "QU") {
                 std::string question;
-                getline(buffer, question);
-                query.query += question;
+                // getline(buffer, question);
+                while(buffer >> question) {
+                    if(this->stopWords.find(question) == this->stopWords.end()) {
+                        query.query += question + " ";
+                    }
+                }
+                clearLineAuthor(query.query);
             } else if (code == "NR") {
                 buffer >> query.numberOfRelevants;
             } else if (code == "RD") {
@@ -204,4 +211,10 @@ Query Parser::nextQuery()
 Parser::Parser()
     : m_currentClass(CursorClass::NOTHING)
 {
+    auto stream = std::ifstream("stopwords_en", std::ifstream::in);
+    std::string line;
+    while (std::getline(stream, line)) {
+        this->stopWords.insert(line);
+    }
+    stream.close();
 }

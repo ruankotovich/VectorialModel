@@ -6,6 +6,7 @@
 #include <string>
 #include "document.hpp"
 #include "query.hpp"
+#include <set>
 
 enum class CursorClass {
     PAPER_NUMBER, //PN
@@ -27,6 +28,7 @@ class Parser {
     std::ifstream m_currentStream;
     CursorClass m_currentClass;
     CursorClass classifyLine(const std::string&);
+    std::set<std::string> stopWords;
     void trim(std::string&);
 public:
     void clearLine(std::string&);
